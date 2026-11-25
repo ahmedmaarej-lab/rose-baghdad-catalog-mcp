@@ -26,7 +26,7 @@ function makeServer() {
       (!category || p.category === category) &&
       (!q || [p.name_ar, p.name_en, p.desc_ar, p.desc_en, p.ingredients_ar, p.ingredients_en]
         .some(t => (t || '').toLowerCase().includes(q)))
-    ).map(({ id, category, name_ar, name_en, price_iqd }) => ({ id, category, name_ar, name_en, price_iqd }));
+    ).map(({ id, category, name_ar, name_en, price_iqd }) => ({ id, category, name_ar, name_en, price_iqd, buy_url: `https://www.rosebaghdad.iq/#product-${id}` }));
     return { content: [{ type: 'text', text: JSON.stringify({ count: items.length, products: items }, null, 1) }] };
   });
 
@@ -37,7 +37,7 @@ function makeServer() {
     annotations: readOnly,
   }, async ({ id }) => {
     const p = CATALOG.find(x => x.id === id);
-    const text = p ? JSON.stringify(p, null, 1) : JSON.stringify({ error: 'not_found', id });
+    const text = p ? JSON.stringify({ ...p, buy_url: `https://www.rosebaghdad.iq/#product-${p.id}` }, null, 1) : JSON.stringify({ error: 'not_found', id });
     return { content: [{ type: 'text', text }], isError: !p };
   });
 
